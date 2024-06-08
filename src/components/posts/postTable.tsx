@@ -2,6 +2,7 @@ import { Table , TableBody,TableCell,TableHead,TableHeader,TableRow, TableCaptio
 import Link from "next/link"
 import posts from "../../../data/posts"
 import { Post } from "../../../types/post"
+import { Button } from "../ui/button"
 
 interface PostsTableProps
 {
@@ -12,6 +13,9 @@ interface PostsTableProps
 
 const PostsTable = ({limit,title} : PostsTableProps) =>
     {
+        const sortedPosts : Post[] = [...posts].sort((a,b) => new Date (b.date).getTime - new Date(a.date).getTime())
+
+
         return <div className="mt-10">
         <h3 className="text-3xl font-semibold"> 
             {title ? title : "Posts"}
@@ -25,13 +29,20 @@ const PostsTable = ({limit,title} : PostsTableProps) =>
                     <TableHead>Title</TableHead>
                     <TableHead className="hidden md:table-cell">Author</TableHead>
                     <TableHead className="hidden md:table-cell text-right">Date</TableHead>
+                    <TableHead>View</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {posts.map(( post ) => {
-                    <TableRow key={post.id}>
+                {sortedPosts.map(( post ) => {
+                    return <TableRow key={post.id}>
                         <TableCell>{post.title}</TableCell>
-                        <TableCell>{post.author}</TableCell>
+                        <TableCell className="hidden md:table-cell">{post.author}</TableCell>
+                        <TableCell className="hidden md:table-cell text-right">{post.date}</TableCell>
+                        <TableCell>
+                            <Link href={`/posts/edit/${post.id}`} >
+                            <Button>Edit</Button>
+                            </Link>
+                        </TableCell>
                     </TableRow>
                 })}
             </TableBody>
